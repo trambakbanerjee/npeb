@@ -152,9 +152,6 @@ ksd_poiss_k0_new<- function(x,h,n){
   K<- exp(-0.5*h^2*B.1^2)+diag(rep(0.001,ny))
   dK1<- K-exp(-0.5*h^2*B.2^2)
   
-  # Kinv<-spdinv(K)
-  # w.temp<- -mat.mult(Kinv,dK1)%*%a
-  
   w.temp<- -lsolve.cgs(K,dK1%*%a,reltol = 1e-5,adjsym = FALSE,verbose = FALSE)$x#-solve(K,dK1%*%a)
   
   # Declare optimization inputs
@@ -221,32 +218,7 @@ ksd_binom_k1_new<- function(x,h,n,m){
     xp<-append(xp,ms[order(ms[,3])[j+1],1],after=(idx.ordered[j+1]+j))
     mp<-append(mp,ms[order(ms[,3])[j+1],2],after=(idx.ordered[j+1]+j))
   }
-  #*****************************************
-  #************************************************
-  # z<-x[order(x)]
-  # s<-split(z, cumsum(c(1, diff(z) > 1)))
-  # 
-  # if(length(s)<=1){
-  #   
-  #   xp<-x
-  #   mp<-m
-  # }else{
-  #   
-  #   ms<-matrix(0,length(s)-1,3)
-  #   for(j in 1:(length(s)-1)){
-  #     
-  #     idx<-max(which(x==max(s[[j]])))
-  #     ms[j,]<-c(max(s[[j]])+1,m[idx],idx)
-  #   }
-  #   idx.ordered<-ms[order(ms[,3]),3]
-  #   xp<-x
-  #   mp<-m
-  #   for(j in 0:(length(s)-2)){
-  #     xp<-append(xp,ms[order(ms[,3])[j+1],1],after=(idx.ordered[j+1]+j))
-  #     mp<-append(mp,ms[order(ms[,3])[j+1],2],after=(idx.ordered[j+1]+j))
-  #   }
-  # }
-  #*****************************************
+ 
   ny<- length(xp)
   set.seed(1)
   y<- xp+abs(rnorm(ny,0,0.001))
@@ -258,7 +230,7 @@ ksd_binom_k1_new<- function(x,h,n,m){
   a<- matrix(rep(1,ny),nrow=ny,ncol=1)
   
   # add constraints
-  O<- order(-y.prop)#order(-y)
+  O<- order(-y.prop)
   eta<- y.prop[O[1:(ny-1)]]/y.prop[O[2:ny]]
   Z<- 1-eta#eta-1
   C<- matrix(0,nrow=ny-1,ncol=ny)
@@ -612,29 +584,19 @@ ure_poiss_new<- function(x,xp,d1,d1.p,h,k){
   if(k==0){
     
     y.pred<- seq(min(x)-1,max(x))
-    # g0<- d1.p[!duplicated(xp)]
-    # dfval<-length(unique(y0))
-    # t<-smooth.spline(x=y0, y=g0,df=dfval,all.knots = TRUE,tol=1e-6)#smooth.spline(x=y0, y=g0,all.knots = TRUE,cv=TRUE,tol=1e-6)#
-    # t.pred<- predict(t,y.pred)
     w0<-matrix(0,n,1)
     for(i in 1:n){
       
       j<-which(x[i]==y.pred)
       k<-min(which(y.pred[j-1]==xp))
       w0[i]<- d1.p[k]#[cc*t.pred$y[j-1]
-      # jj<-which(y.pred[j-1]==y0)
-      # if(length(jj)>0){
-      #   w0[i]<-mean(g0[jj])
-      # }
+   
     }
     
     
     t1<- (1/n)*sum(x*(x-1))#(1/n)*sum(x*(x-1))
     t2<- (1/n)*sum(d1^2)
     t3<- (-2/n)*sum((x*w0))#(-2/n)*sum(x*delt)#
-    # t1<- (1/n)*sum(x)#(1/n)*sum(x*(x-1))
-    # t2<- (1/n)*sum(d1^2)+(2/n)*sum(x*d1)
-    # t3<- (-2/n)*sum((x*w0))#(-2/n)*sum(x*delt)#
     ure<- t1+t2+t3
     return(list("t1"=t1,"t2"=t2,"t3"=t3,"ure"=ure))
     
