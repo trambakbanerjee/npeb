@@ -6,11 +6,11 @@ npeb
 ![](http://cranlogs.r-pkg.org/badges/grand-total/asus)-->
 This is an R package for Non-Parametric Empirical Bayes estimation in the Discrete Linear Exponential (`DLE`) family, which includes a wide class of discrete distributions frequently arising from modern big data applications. The proposed framework directly estimates the Bayes shrinkage factor in the generalized Robbins' formula via solving a scalable convex
 program, which is carefully developed based on a RKHS representation of the Stein's discrepancy
-measure. Moreover, the new estimation framework is exible for incorporating various structural constraints into the data driven rule, and provides a unified approach to compound estimation with both regular and scaled squared error losses. 
+measure. Moreover, the new estimation framework is flexible for incorporating various structural constraints into the data driven rule, and provides a unified approach to compound estimation with both regular and scaled squared error losses. 
  
 How to use this repository?
 ----------
-Soon this repository will hold the R-package npeb which is currently under development. 
+Soon this repository will hold the R-package `npeb` which is currently under development. 
 
 References
 =======
